@@ -4,7 +4,7 @@ import { ProductModel } from "../model/model";
 import { ProductData } from "../data/data";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
-import { useAppDispatch } from "../hooks/hooks";
+import { useAppDispatch } from "../app/hooks";
 import { addProduct } from "../redux/cartSlice";
 
 const ProductPage: React.FC = () => {

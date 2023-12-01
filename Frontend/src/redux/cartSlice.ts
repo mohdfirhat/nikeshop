@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ProductModel } from "../model/model";
-import { RootState } from "./store";
+import { RootState } from "../app/store";
 
 export type ProductCartModel = ProductModel & {
   color: string;
@@ -8,11 +8,11 @@ export type ProductCartModel = ProductModel & {
   quantity: number;
 };
 
-export interface CartState {
+export type CartState = {
   products: ProductCartModel[];
   cartQuantity: number;
   total: number;
-}
+};
 
 const initialState: CartState = {
   products: [],

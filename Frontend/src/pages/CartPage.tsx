@@ -1,5 +1,5 @@
 import CartCard from "../components/CartCard";
-import { useAppSelector } from "../hooks/hooks";
+import { useAppSelector } from "../app/hooks";
 import { selectCart } from "../redux/cartSlice";
 
 const CartPage = () => {
