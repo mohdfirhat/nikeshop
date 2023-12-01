@@ -12,5 +12,7 @@ export type ProductModel = {
   url: string;
   shortDesc: string;
   price: number;
+  sizes: string[];
+  colors: string[];
   cat: string[];
 };

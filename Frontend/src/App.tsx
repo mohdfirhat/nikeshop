@@ -5,6 +5,7 @@ import ProductPage from "./pages/ProductPage";
 import Root from "./pages/Root";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import CartPage from "./pages/CartPage";
 
 const App: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
           <Route path="register" element={<RegisterPage />} />
           <Route path="/products/:category" element={<ProductListPage />} />
           <Route path="/product/:id" element={<ProductPage />} />
+          <Route path="cart" element={<CartPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -2,15 +2,21 @@ import { createSlice } from "@reduxjs/toolkit";
 import { ProductModel } from "../model/model";
 import { RootState } from "./store";
 
-export interface CartState {
-  products: ProductModel[];
+export type ProductCartModel = ProductModel & {
+  color: string;
+  size: string;
   quantity: number;
+};
+
+export interface CartState {
+  products: ProductCartModel[];
+  cartQuantity: number;
   total: number;
 }
 
 const initialState: CartState = {
   products: [],
-  quantity: 0,
+  cartQuantity: 0,
   total: 0,
 };
 
@@ -30,17 +36,67 @@ const cartSlice = createSlice({
         state.products[find].quantity += action.payload.quantity;
         state.total += action.payload.price * action.payload.quantity;
       } else {
-        state.quantity += 1;
+        state.cartQuantity += 1;
         state.products.push(action.payload);
         state.total += action.payload.price * action.payload.quantity;
       }
+    },
+    addCartQuantity: (state, action) => {
+      const addIndex = state.products.findIndex(
+        (item) =>
+          //find product to delete
+          item.id === action.payload.id &&
+          item.size === action.payload.size &&
+          item.color === action.payload.color
+      );
+      if (addIndex >= 0) {
+        state.products[addIndex].quantity += 1;
+      }
+      state.total += action.payload.price;
+    },
+    reduceCartQuantity: (state, action) => {
+      const reduceIndex = state.products.findIndex(
+        (item) =>
+          //find product to delete
+          item.id === action.payload.id &&
+          item.size === action.payload.size &&
+          item.color === action.payload.color
+      );
+      if (reduceIndex >= 0) {
+        state.products[reduceIndex].quantity -= 1;
+      }
+      state.total -= action.payload.price;
+    },
+    removeCartItem: (state, action) => {
+      const deleteIndex = state.products.findIndex(
+        (item) =>
+          //find product to delete
+          item.id === action.payload.id &&
+          item.size === action.payload.size &&
+          item.color === action.payload.color
+      );
+      console.log(deleteIndex);
+      if (deleteIndex >= 0) {
+        if (state.products.length === 1) {
+          //last product remove and reset products
+          state.products = [];
+        } else {
+          //remove selected product
+          state.products.splice(deleteIndex, 1);
+        }
+      }
+      state.cartQuantity -= 1;
+      state.total -= action.payload.price * action.payload.quantity;
     },
   },
   extraReducers: {},
 });
 
 export const {
-  /*TODO:reducers actions */
+  addProduct,
+  addCartQuantity,
+  reduceCartQuantity,
+  removeCartItem,
 } = cartSlice.actions;
 
 export const selectCart = (state: RootState) => state.cart;

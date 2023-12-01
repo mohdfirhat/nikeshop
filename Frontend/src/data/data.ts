@@ -9,6 +9,8 @@ export const ProductData: ProductModel[] = [
     shortDesc: "Men's Long-Sleeve T-Shirt",
     price: 40,
     cat: ["men", "t-shirt"],
+    sizes: ["S", "M", "L"],
+    colors: ["Dark Blue"],
   },
   {
     id: 2,
@@ -17,6 +19,8 @@ export const ProductData: ProductModel[] = [
     shortDesc: "Men's Overalls",
     price: 140,
     cat: ["men", "overalls"],
+    sizes: ["S", "M", "L"],
+    colors: ["Dark Blue"],
   },
   {
     id: 3,
@@ -25,5 +29,7 @@ export const ProductData: ProductModel[] = [
     shortDesc: "Men's Game Football Jersey",
     price: 130,
     cat: ["men", "t-shirt"],
+    sizes: ["S", "M", "L"],
+    colors: ["Dark Blue"],
   },
 ];
