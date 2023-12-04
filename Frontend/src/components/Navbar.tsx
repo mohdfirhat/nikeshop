@@ -14,7 +14,7 @@ const Navbar: React.FC = () => {
         <div className="c-middle px-4">
           <img
             className="hidden h-14 mix-blend-multiply md:block"
-            src="/public/nike_logo.jpeg"
+            src="/src/assets/nike_logo.jpeg"
             alt="nike logo"
           />
         </div>

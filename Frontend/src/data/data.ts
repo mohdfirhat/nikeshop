@@ -1,6 +1,5 @@
 import { ProductModel } from "../model/model";
 
-//TODO: add size and color
 export const ProductData: ProductModel[] = [
   {
     id: 1,

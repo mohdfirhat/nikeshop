@@ -5,7 +5,6 @@ export type categoryItemModel = {
   cat: string;
 };
 
-//TODO: add size and color
 export type ProductModel = {
   id: number;
   name: string;

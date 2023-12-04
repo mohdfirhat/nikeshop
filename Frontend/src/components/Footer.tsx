@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
       <aside className="items-center grid-flow-col">
         <img
           className="h-14 mix-blend-multiply"
-          src="/public/nike_logo.jpeg"
+          src="/src/assets/nike_logo.jpeg"
           alt="nike logo"
         />
         <p>Nike | Just Do It</p>

@@ -19,12 +19,16 @@ const initialState: CartState = {
   cartQuantity: 0,
   total: 0,
 };
+type productCartActionModel = {
+  payload: ProductCartModel;
+  type: string;
+};
 
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addProduct: (state, action) => {
+    addProduct: (state, action: productCartActionModel) => {
       let find = state.products.findIndex(
         (item) =>
           //combine if same id,size,color else create new cart product
@@ -41,7 +45,7 @@ const cartSlice = createSlice({
         state.total += action.payload.price * action.payload.quantity;
       }
     },
-    addCartQuantity: (state, action) => {
+    addCartQuantity: (state, action: productCartActionModel) => {
       const addIndex = state.products.findIndex(
         (item) =>
           //find product to delete
@@ -54,7 +58,7 @@ const cartSlice = createSlice({
       }
       state.total += action.payload.price;
     },
-    reduceCartQuantity: (state, action) => {
+    reduceCartQuantity: (state, action: productCartActionModel) => {
       const reduceIndex = state.products.findIndex(
         (item) =>
           //find product to delete
@@ -67,7 +71,7 @@ const cartSlice = createSlice({
       }
       state.total -= action.payload.price;
     },
-    removeCartItem: (state, action) => {
+    removeCartItem: (state, action: productCartActionModel) => {
       const deleteIndex = state.products.findIndex(
         (item) =>
           //find product to delete
