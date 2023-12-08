@@ -1,5 +1,3 @@
-//TODO: refer to https://www.npmjs.com/package/sequelize-typescript#model-definition to create user model
-
 import {
   Table,
   Column,
@@ -10,17 +8,30 @@ import {
   Default,
   PrimaryKey,
   HasMany,
-  BelongsTo,
   Unique,
 } from "sequelize-typescript";
 import Order from "./Order";
+import { NonAttribute } from "sequelize";
+
+export type UserCreationAttributes = {
+  email: string;
+  password: string;
+};
+
+export type UserAttributes = UserCreationAttributes & {
+  id: string;
+  isAdmin: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  orders?: NonAttribute<Order[]>;
+};
 
 @Table({
   timestamps: true,
   tableName: "users",
   modelName: "User",
 })
-class User extends Model {
+class User extends Model<UserAttributes, UserCreationAttributes> {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column({ type: DataType.UUID })
@@ -35,74 +46,27 @@ class User extends Model {
 
   @Default(false)
   @Column({ type: DataType.BOOLEAN })
-  declare is_admin: string;
+  declare isAdmin: boolean;
 
   @CreatedAt
-  declare created_at: Date;
+  declare createdAt: Date;
 
   @UpdatedAt
-  declare updated_at: Date;
+  declare updatedAt: Date;
 
   //One-to-Many Relationship
-  @HasMany(() => Order) orders: Order[];
+  @HasMany(() => Order) orders?: NonAttribute<Order[]>;
 }
+
+export const bulkCreateUsers = () =>
+  User.bulkCreate([
+    {
+      email: "hello@gmail.com",
+      password: "world",
+    },
+    {
+      email: "hello2@gmail.com",
+      password: "world2",
+    },
+  ]);
 export default User;
-
-/*example
-import {
-  Table,
-  Column,
-  Model,
-  DataType,
-  CreatedAt,
-  UpdatedAt,
-  ForeignKey,
-} from "sequelize-typescript";
-import Travel from "./Travel";
-
-@Table({
-  timestamps: true,
-  tableName: "tours",
-  modelName: "Tour",
-})
-class Tour extends Model<TourAttributes> {
-  @Column({
-    primaryKey: true,
-    type: DataType.UUID,
-    defaultValue: DataType.UUIDV4,
-  })
-  declare id: string;
-
-  @ForeignKey(() => Travel)
-  @Column({
-    type: DataType.UUID,
-  })
-  declare travel_id: string;
-
-  @Column({
-    type: DataType.STRING,
-  })
-  declare name: string;
-
-  @Column({
-    type: DataType.DATEONLY,
-  })
-  declare starting_date: Date;
-
-  @Column({
-    type: DataType.DATEONLY,
-  })
-  declare ending_date: Date;
-
-  @Column({
-    type: DataType.DECIMAL(10, 4),
-  })
-  declare price: number;
-
-  @CreatedAt
-  declare created_at: Date;
-
-  @UpdatedAt
-  declare updated_at: Date;
-}
-*/

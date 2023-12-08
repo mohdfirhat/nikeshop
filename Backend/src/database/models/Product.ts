@@ -1,3 +1,4 @@
+import { NonAttribute } from "sequelize";
 import {
   Table,
   Column,
@@ -7,18 +8,37 @@ import {
   UpdatedAt,
   Default,
   PrimaryKey,
-  HasMany,
   BelongsToMany,
 } from "sequelize-typescript";
 import Order from "./Order";
 import OrderProduct from "./OrderProduct";
+
+export type ProductCreationAttributes = {
+  name: string;
+  shortDesc: string;
+  description: string;
+  sizes: string[];
+  colors: string[];
+  categories: string[];
+  urls: string[];
+  rating: number;
+  price: number;
+  stock: number;
+};
+
+export type ProductAttributes = ProductCreationAttributes & {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  orders?: NonAttribute<Order[]>;
+};
 
 @Table({
   timestamps: true,
   tableName: "products",
   modelName: "Product",
 })
-class Product extends Model {
+class Product extends Model<ProductAttributes, ProductCreationAttributes> {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column({ type: DataType.UUID })
@@ -28,7 +48,7 @@ class Product extends Model {
   declare name: string;
 
   @Column({ type: DataType.STRING })
-  declare short_desc: string;
+  declare shortDesc: string;
 
   @Column({ type: DataType.STRING(1000) })
   declare description: string;
@@ -43,7 +63,7 @@ class Product extends Model {
   declare categories: string[];
 
   @Column({ type: DataType.ARRAY(DataType.STRING) })
-  declare images: string[];
+  declare urls: string[];
 
   @Column({ type: DataType.DECIMAL })
   declare rating: number;
@@ -52,16 +72,79 @@ class Product extends Model {
   declare price: number;
 
   @Column({ type: DataType.INTEGER })
-  declare quantity: number;
+  declare stock: number;
 
   @CreatedAt
-  declare created_at: Date;
+  declare createdAt: Date;
 
   @UpdatedAt
-  declare updated_at: Date;
+  declare updatedAt: Date;
 
   //Many-to-Many Relationship - order
   @BelongsToMany(() => Order, { through: () => OrderProduct })
-  orders: Order[];
+  orders?: NonAttribute<Order[]>;
 }
+export const bulkCreateProducts = () =>
+  Product.bulkCreate([
+    {
+      name: "productname1",
+      shortDesc: "shortDesc1",
+      description: "description1",
+      sizes: ["S", "M", "L"],
+      colors: ["white", "black"],
+      categories: ["men", "shoes"],
+      urls: ["url1", "url2", "url3"],
+      rating: 3.5,
+      price: 100.0,
+      stock: 100,
+    },
+    {
+      name: "productname2",
+      shortDesc: "shortDesc2",
+      description: "description2",
+      sizes: ["S", "M", "L"],
+      colors: ["white", "black"],
+      categories: ["men", "shoes"],
+      urls: ["url1", "url2", "url3"],
+      rating: 3.5,
+      price: 100.0,
+      stock: 100,
+    },
+    {
+      name: "productname3",
+      shortDesc: "shortDesc3",
+      description: "description3",
+      sizes: ["S", "M", "L"],
+      colors: ["white", "black"],
+      categories: ["men", "shoes"],
+      urls: ["url1", "url2", "url3"],
+      rating: 3.5,
+      price: 100.0,
+      stock: 100,
+    },
+    {
+      name: "productname4",
+      shortDesc: "shortDesc4",
+      description: "description4",
+      sizes: ["S", "M", "L"],
+      colors: ["white", "black"],
+      categories: ["men", "shoes"],
+      urls: ["url1", "url2", "url3"],
+      rating: 3.5,
+      price: 100.0,
+      stock: 100,
+    },
+    {
+      name: "productname5",
+      shortDesc: "shortDesc5",
+      description: "description5",
+      sizes: ["S", "M", "L"],
+      colors: ["white", "black"],
+      categories: ["men", "shoes"],
+      urls: ["url1", "url2", "url3"],
+      rating: 3.5,
+      price: 100.0,
+      stock: 100,
+    },
+  ]);
 export default Product;

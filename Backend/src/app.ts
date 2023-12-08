@@ -1,13 +1,13 @@
-import express from "express";
 import dotenv from "dotenv";
 dotenv.config();
+import express, { Response } from "express";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
-import "./database/connection";
 import { productRoute } from "./routes/productRoute";
 import { userRoute } from "./routes/userRoute";
 import { connection, createTable } from "./database/connection";
+import { orderRoute } from "./routes/orderRoute";
 
 dotenv.config();
 
@@ -22,8 +22,9 @@ app.use(helmet());
 
 app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
+app.use("/api/orders", orderRoute);
 
-app.get("/api", (req, res) => {
+app.get("/api", (res: Response) => {
   res.send("Hello World!");
 });
 

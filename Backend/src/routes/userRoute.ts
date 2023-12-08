@@ -1,44 +1,53 @@
-import express from "express";
-import User from "../database/models/User";
+import express, { Response } from "express";
+import User, { UserAttributes } from "../database/models/User";
 
 export const userRoute = express.Router();
 
-//CRUD: Create Read Update Delete
 //TODO: Add authrization for User and Admin
 //TODO: Add validator for user input
+//TODO: Error-handling
+
+//CRUD: Create Read Update Delete
 //Create
+//Auth: Anyone
 userRoute.post("/", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const newUser = await User.create({ email, password });
-    res.status(200).json(newUser);
+    const newUser: UserAttributes = await User.create({ email, password });
+    res.status(201).json(newUser);
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
 //Read
-userRoute.get("/", async (req, res) => {
+//Auth:Admin
+userRoute.get("/", async (res: Response) => {
   try {
-    const allUser = await User.findAll();
+    const allUser: User[] = await User.findAll();
     res.status(200).json(allUser);
   } catch (err) {
     res.status(500).json(err);
   }
 });
-userRoute.get("/find/:id", async (req, res) => {
+//Auth:Admin
+userRoute.get("/:id", async (req, res) => {
   try {
-    const allUser = await User.findByPk(req.body.id);
-    res.status(200).json(allUser);
+    const { id } = req.params;
+    const foundUser = await User.findByPk(id);
+    res.status(200).json(foundUser);
   } catch (err) {
     res.status(500).json(err);
   }
 });
+
 //Update
+//Auth: User , Admin
 userRoute.put("/:id", async (req, res) => {
   try {
-    const { id, oldPass, newPass } = req.body;
-    const updatedUser = await User.update(
+    const { id } = req.params;
+    const { oldPass, newPass } = req.body;
+    await User.update(
       { password: newPass },
       {
         where: {
@@ -52,12 +61,15 @@ userRoute.put("/:id", async (req, res) => {
     res.status(500).json(err);
   }
 });
+
 //Delete
+//Auth: User , Admin
 userRoute.delete("/:id", async (req, res) => {
   try {
+    const { id } = req.params;
     const deletedUser = await User.destroy({
       where: {
-        id: req.body.id,
+        id,
       },
     });
     res.status(200).json(deletedUser);

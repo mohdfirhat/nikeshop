@@ -3,26 +3,35 @@ import {
   Column,
   Model,
   DataType,
-  CreatedAt,
-  UpdatedAt,
   Default,
   PrimaryKey,
-  HasMany,
   BelongsToMany,
   ForeignKey,
   BelongsTo,
-  HasOne,
 } from "sequelize-typescript";
 import User from "./User";
 import Product from "./Product";
 import OrderProduct from "./OrderProduct";
+import { NonAttribute } from "sequelize";
+
+export type OrderCreationAttributes = {
+  userId: string;
+  totalCost: number;
+  cartQuantity: number;
+};
+
+export type OrderAttributes = OrderCreationAttributes & {
+  id: string;
+  user?: User;
+  products?: NonAttribute<Product[]>;
+};
 
 @Table({
   timestamps: false,
   tableName: "orders",
   modelName: "Order",
 })
-class Order extends Model {
+class Order extends Model<OrderAttributes, OrderCreationAttributes> {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column({ type: DataType.UUID })
@@ -30,15 +39,18 @@ class Order extends Model {
 
   @ForeignKey(() => User)
   @Column({ type: DataType.UUID })
-  declare user_id: string;
+  declare userId: string;
 
   @Column({ type: DataType.DECIMAL })
-  declare amount: number;
+  declare totalCost: number;
+
+  @Column({ type: DataType.INTEGER })
+  declare cartQuantity: number;
 
   //Many-to-One Relationship - user
-  @BelongsTo(() => User, "user_id") user: User;
+  @BelongsTo(() => User) user?: NonAttribute<User>;
   //Many-to-Many Relationship - product
   @BelongsToMany(() => Product, { through: () => OrderProduct })
-  products: Product[];
+  products?: NonAttribute<Product[]>;
 }
 export default Order;
