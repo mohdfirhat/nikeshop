@@ -8,6 +8,7 @@ import { productRoute } from "./routes/productRoute";
 import { userRoute } from "./routes/userRoute";
 import { connection, createTable } from "./database/connection";
 import { orderRoute } from "./routes/orderRoute";
+import { authRoute } from "./routes/authRoute";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(helmet());
 
+app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
 app.use("/api/orders", orderRoute);

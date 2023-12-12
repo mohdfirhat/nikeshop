@@ -1,50 +1,54 @@
 import { ProductAttributes } from "./../database/models/Product";
 import express, { Request, Response } from "express";
 import Product from "../database/models/Product";
+import { verifyTokenAndAdmin } from "./authRoute";
 
 export const productRoute = express.Router();
 
-//TODO: Add authrization for User and Admin
 //TODO: Add validator for user input
 //TODO: Error-handling
 
 //CRUD: Create Read Update Delete
 //Create
 //Auth: Admin
-productRoute.post("/", async (req: Request, res: Response) => {
-  try {
-    const {
-      name,
-      shortDesc,
-      description,
-      sizes,
-      colors,
-      categories,
-      urls,
-      rating,
-      price,
-      stock,
-    } = req.body;
-    const product = {
-      name,
-      shortDesc,
-      description,
-      sizes,
-      colors,
-      categories,
-      urls,
-      rating,
-      price,
-      stock,
-    };
-    const newProduct: ProductAttributes = await Product.create(product);
-    res.status(201).json(newProduct);
-  } catch (err) {
-    res.status(500).json(err);
+productRoute.post(
+  "/",
+  verifyTokenAndAdmin,
+  async (req: Request, res: Response) => {
+    try {
+      const {
+        name,
+        shortDesc,
+        description,
+        sizes,
+        colors,
+        categories,
+        urls,
+        rating,
+        price,
+        stock,
+      } = req.body;
+      const product = {
+        name,
+        shortDesc,
+        description,
+        sizes,
+        colors,
+        categories,
+        urls,
+        rating,
+        price,
+        stock,
+      };
+      const newProduct: ProductAttributes = await Product.create(product);
+      res.status(201).json(newProduct);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   }
-});
+);
 
-//Read
+//Read: get 10 products at a time
 //Auth: Anyone
 productRoute.get("/", async (req: Request, res: Response) => {
   try {
@@ -69,23 +73,13 @@ productRoute.get("/:id", async (req: Request, res: Response) => {
 
 //Update
 //Auth: Admin
-productRoute.put("/:id", async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const {
-      name,
-      shortDesc,
-      description,
-      sizes,
-      colors,
-      categories,
-      urls,
-      rating,
-      price,
-      stock,
-    } = req.body;
-    await Product.update(
-      {
+productRoute.put(
+  "/:id",
+  verifyTokenAndAdmin,
+  async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const {
         name,
         shortDesc,
         description,
@@ -96,31 +90,49 @@ productRoute.put("/:id", async (req: Request, res: Response) => {
         rating,
         price,
         stock,
-      },
-      {
-        where: {
-          id,
+      } = req.body;
+      await Product.update(
+        {
+          name,
+          shortDesc,
+          description,
+          sizes,
+          colors,
+          categories,
+          urls,
+          rating,
+          price,
+          stock,
         },
-      }
-    );
-    res.status(200).json("Product is updated.");
-  } catch (err) {
-    res.status(500).json(err);
+        {
+          where: {
+            id,
+          },
+        }
+      );
+      res.status(200).json("Product is updated.");
+    } catch (err) {
+      res.status(500).json(err);
+    }
   }
-});
+);
 
 //Delete
 //Auth: Admin
-productRoute.delete("/:id", async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const deletedProduct = await Product.destroy({
-      where: {
-        id,
-      },
-    });
-    res.status(200).json(deletedProduct);
-  } catch (err) {
-    res.status(500).json(err);
+productRoute.delete(
+  "/:id",
+  verifyTokenAndAdmin,
+  async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const deletedProduct = await Product.destroy({
+        where: {
+          id,
+        },
+      });
+      res.status(200).json(deletedProduct);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   }
-});
+);

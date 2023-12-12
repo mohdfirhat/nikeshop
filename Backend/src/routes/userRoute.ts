@@ -1,9 +1,9 @@
 import express, { Response } from "express";
 import User, { UserAttributes } from "../database/models/User";
+import { verifyTokenAndAdmin, verifyTokenAndAuthorization } from "./authRoute";
 
 export const userRoute = express.Router();
 
-//TODO: Add authrization for User and Admin
 //TODO: Add validator for user input
 //TODO: Error-handling
 
@@ -22,7 +22,7 @@ userRoute.post("/", async (req, res) => {
 
 //Read
 //Auth:Admin
-userRoute.get("/", async (res: Response) => {
+userRoute.get("/", verifyTokenAndAdmin, async (res: Response) => {
   try {
     const allUser: User[] = await User.findAll();
     res.status(200).json(allUser);
@@ -43,7 +43,7 @@ userRoute.get("/:id", async (req, res) => {
 
 //Update
 //Auth: User , Admin
-userRoute.put("/:id", async (req, res) => {
+userRoute.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
   try {
     const { id } = req.params;
     const { oldPass, newPass } = req.body;
@@ -64,7 +64,7 @@ userRoute.put("/:id", async (req, res) => {
 
 //Delete
 //Auth: User , Admin
-userRoute.delete("/:id", async (req, res) => {
+userRoute.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
   try {
     const { id } = req.params;
     const deletedUser = await User.destroy({

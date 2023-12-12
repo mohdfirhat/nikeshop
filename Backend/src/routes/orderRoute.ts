@@ -4,17 +4,17 @@ import OrderProduct, {
   OrderProductCreationAttributes,
 } from "../database/models/OrderProduct";
 import { ProductAttributes } from "../database/models/Product";
+import { verifyTokenAndAuthorization } from "./authRoute";
 
 export const orderRoute = express.Router();
 
-//TODO: Add authrization for User and Admin
 //TODO: Add validator for user input
 //TODO: Error-handling
 
 //CRUD: Create Read Update Delete
 //Create
 //Auth: User
-orderRoute.post("/", async (req, res) => {
+orderRoute.post("/", verifyTokenAndAuthorization, async (req, res) => {
   try {
     const { products, userId, cartQuantity, totalCost } = req.body;
 
@@ -44,7 +44,7 @@ orderRoute.post("/", async (req, res) => {
 
 //Read
 //Auth: User
-orderRoute.get("/", async (req, res) => {
+orderRoute.get("/", verifyTokenAndAuthorization, async (req, res) => {
   try {
     const { userId } = req.body;
     const orders: Order[] = await Order.findAll({ where: { userId } });
@@ -54,7 +54,7 @@ orderRoute.get("/", async (req, res) => {
   }
 });
 
-orderRoute.get("/:id", async (req, res) => {
+orderRoute.get("/:id", verifyTokenAndAuthorization, async (req, res) => {
   try {
     const { id } = req.params;
     const order: Order | null = await Order.findByPk(id);
@@ -65,11 +65,11 @@ orderRoute.get("/:id", async (req, res) => {
 });
 //Update
 //Auth: User
-//Dont allow update Order only delete and reorder
+//Dont allow update Order only delete and reorder products
 
 //Delete
 //Auth:User
-orderRoute.delete("/:id", async (req, res) => {
+orderRoute.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
   try {
     const { id } = req.params;
     const { userId } = req.body;
