@@ -6,7 +6,6 @@ import cookieParser from "cookie-parser";
 
 export const authRoute = express.Router();
 
-//TODO: Add authrization for User and Admin
 //use cookie-parser
 //TODO: Add validator for user input
 //TODO: Error-handling
@@ -17,9 +16,9 @@ authRoute.use(cookieParser());
 authRoute.post("/register", async (req: Request, res: Response) => {
   const { email, password } = req.body;
   //encrypt password by salting and hashing
-  const saltRounds = process.env.SALT_ROUND;
+  const saltRounds = Number(process.env.SALT_ROUND);
   try {
-    bcrypt.hash(password, saltRounds!).then(function (hash) {
+    bcrypt.hash(password, saltRounds).then(function (hash) {
       // Store hash in your password DB.
       const newUser: Promise<UserCreationAttributes> = User.create({
         email,
@@ -37,10 +36,15 @@ authRoute.post("/register", async (req: Request, res: Response) => {
 authRoute.post("/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne(email);
-    !user && res.status(401).json("Wrong Email!");
+    //TODO:test login
+    const user = await User.findOne({ where: { email } });
+    console.log(user);
+    if (!user) {
+      throw Error("Wrong Email");
+    }
 
     const match = await bcrypt.compare(password, user.password);
+    console.log(match);
     if (match) {
       //create jwt token
       const accessToken: string = jwt.sign(
@@ -51,16 +55,14 @@ authRoute.post("/login", async (req: Request, res: Response) => {
         process.env.JWT_SEC!,
         { expiresIn: "3d" }
       );
-
-      req.cookies("access_token", accessToken, {
+      //set jwt to access_token cookie
+      res.cookie("access_token", accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
       });
-      //TODO: Remove console.log after testing
-      console.log(res.cookie);
 
-      //TODO:login
-      res.redirect("/");
+      //TODO:login route
+      res.status(201).send();
     } else {
       res.status(401).json("Wrong Password!");
     }
