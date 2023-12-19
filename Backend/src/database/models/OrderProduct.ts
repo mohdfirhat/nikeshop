@@ -25,11 +25,6 @@ export type OrderProductAttributes = OrderProductCreationAttributes;
   modelName: "OrderProduct",
 })
 class OrderProduct extends Model<OrderProductCreationAttributes> {
-  // @PrimaryKey
-  // @Default(DataType.UUIDV4)
-  // @Column({ type: DataType.UUID })
-  // declare id: string;
-
   @ForeignKey(() => Order)
   @Column({ type: DataType.UUID })
   declare orderId: string;

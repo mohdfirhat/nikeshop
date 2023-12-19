@@ -1,22 +1,41 @@
-import { useLocation } from "react-router-dom";
-import { ProductData as ProdData } from "../data/data";
+import { useEffect, useState } from "react";
 import Product from "./Product";
-import { titleCase } from "../util/titleCase";
+import axios from "axios";
+import { ProductModel } from "../model/model";
 
-const Products: React.FC = () => {
-  const location = useLocation();
-  const categoryName = location.pathname.split("/")[2];
-  const ProductData = ProdData.filter((prod) =>
-    prod.cat.includes(categoryName)
+type Props = {
+  category: string;
+};
+//TODO: Make sure process.env is working and remove hardcorded value
+const Products: React.FC<Props> = ({ category }) => {
+  const baseUrl = "http://localhost:3000/api";
+
+  const [products, setProducts] = useState<ProductModel[]>([]);
+
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const res = await axios.get(
+          category
+            ? `${baseUrl}/products?category=${category}`
+            : `${baseUrl}/products`
+        );
+        console.log(res);
+        setProducts(res.data);
+
+        console.log(products);
+      } catch (err) {}
+    };
+    getProducts();
+  }, []);
+
+  const ProductData = products.filter((prod) =>
+    prod.categories.includes(category)
   );
 
   return (
     <>
-      <h2 className=" text-4xl font-bold pt-8 pl-8">
-        {titleCase(categoryName)}
-      </h2>
-
-      <div className="sm:flex flex-wrap">
+      <div className="sm:flex">
         {ProductData.map((item) => (
           <Product item={item} key={item.id} />
         ))}

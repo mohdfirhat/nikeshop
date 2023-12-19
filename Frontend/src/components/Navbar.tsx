@@ -1,8 +1,11 @@
 import { ShoppingCartOutlined } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 import { Link } from "react-router-dom";
+import { useAppSelector } from "../app/hooks";
+import { selectCart } from "../redux/cartSlice";
 
 const Navbar: React.FC = () => {
+  const cart = useAppSelector(selectCart);
   return (
     <header className=" h-16">
       <div className="flex justify-between items-center fixed inset-x-0 top-0 z-10 bg-white shadow">
@@ -34,7 +37,12 @@ const Navbar: React.FC = () => {
             </li>
             <li className="p-2">
               <Link to="/cart">
-                <ShoppingCartOutlined />
+                <div className="indicator my-auto">
+                  <span className="indicator-item indicator-top indicator-end badge badge-secondary">
+                    {cart.cartQuantity}
+                  </span>
+                  <ShoppingCartOutlined className="grid place-items-center" />
+                </div>
               </Link>
             </li>
           </ul>

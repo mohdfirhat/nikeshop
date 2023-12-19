@@ -19,7 +19,7 @@ const CartCard = ({ item }: Props) => {
   return (
     <div className="card card-side bg-base-100 shadow-xl my-3">
       <figure className="w-[30%]">
-        <img className="" src={item.url} alt={item.name} />
+        <img className="" src={item.urls[0]} alt={item.name} />
       </figure>
       <div className="card-body">
         <h2 className="card-title">{item.name}</h2>

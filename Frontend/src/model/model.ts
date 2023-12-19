@@ -6,12 +6,15 @@ export type categoryItemModel = {
 };
 
 export type ProductModel = {
-  id: number;
+  id: string;
   name: string;
-  url: string;
   shortDesc: string;
-  price: number;
+  description: string;
   sizes: string[];
   colors: string[];
-  cat: string[];
+  categories: string[];
+  urls: string[];
+  rating: number;
+  price: number;
+  stock: number;
 };

@@ -23,7 +23,7 @@ export type OrderCreationAttributes = {
 export type OrderAttributes = OrderCreationAttributes & {
   id: string;
   user?: User;
-  products?: NonAttribute<Product[]>;
+  products?: Product[];
 };
 
 @Table({

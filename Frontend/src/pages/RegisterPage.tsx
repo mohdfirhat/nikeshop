@@ -1,6 +1,39 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { publicRequest } from "../requestMethods";
 
 const RegisterPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const navigate = useNavigate();
+  const err: any = {};
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      //TODO: continue login api call
+      const res = await publicRequest.post("/auth/register", {
+        name,
+        email,
+        password,
+      });
+      if (res.status === 201) {
+        navigate("/login");
+      }
+      console.log(res);
+      setIsError(false);
+    } catch (err) {
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="hero min-h-screen bg-base-200">
       <div className="w-[90vw] hero-content flex-col lg:flex-row-reverse">
@@ -9,15 +42,20 @@ const RegisterPage = () => {
           <p className="py-6">Experience the Nike Shop experience today</p>
         </div>
         <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-          <form className="card-body">
+          <p className=" text-red-600" hidden={!isError}>
+            {err?.message}
+          </p>
+          <form className="card-body" onSubmit={handleSubmit}>
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Name</span>
               </label>
               <input
-                type="email"
+                type="text"
                 placeholder="name"
                 className="input input-bordered"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 required
               />
             </div>
@@ -29,6 +67,8 @@ const RegisterPage = () => {
                 type="email"
                 placeholder="email"
                 className="input input-bordered"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
@@ -40,16 +80,18 @@ const RegisterPage = () => {
                 type="password"
                 placeholder="password"
                 className="input input-bordered"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <label className="label">
-                <a href="#" className="label-text-alt link link-hover">
-                  Forgot password?
-                </a>
-              </label>
             </div>
             <div className="form-control mt-6">
-              <button className="btn btn-primary">Register</button>
+              <input
+                className="btn btn-primary"
+                type="submit"
+                value="Register"
+                disabled={isLoading}
+              />
               <label className="label">
                 <Link
                   to={"/login"}

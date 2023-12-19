@@ -16,7 +16,8 @@ export const orderRoute = express.Router();
 //Auth: User
 orderRoute.post("/", verifyTokenAndAuthorization, async (req, res) => {
   try {
-    const { products, userId, cartQuantity, totalCost } = req.body;
+    const userId = req.user.id;
+    const { products, cartQuantity, totalCost } = req.body;
 
     const newOrder: Order = await Order.create({
       userId,

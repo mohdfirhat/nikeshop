@@ -1,7 +1,7 @@
-import { ProductAttributes } from "./../database/models/Product";
 import express, { Request, Response } from "express";
 import Product from "../database/models/Product";
 import { verifyTokenAndAdmin } from "./authRoute";
+import { Op } from "sequelize";
 
 export const productRoute = express.Router();
 
@@ -40,7 +40,7 @@ productRoute.post(
         price,
         stock,
       };
-      const newProduct: ProductAttributes = await Product.create(product);
+      const newProduct = await Product.create(product);
       res.status(201).json(newProduct);
     } catch (err) {
       res.status(500).json(err);
@@ -52,9 +52,14 @@ productRoute.post(
 //Auth: Anyone
 productRoute.get("/", async (req: Request, res: Response) => {
   try {
+    const { category } = req.params;
     const { offset } = req.body;
     const product = offset
-      ? await Product.findAll({ offset, limit: 10 })
+      ? await Product.findAll({
+          offset,
+          limit: 10,
+          where: { categories: { [Op.contains]: [category] } },
+        })
       : await Product.findAll({ limit: 10 });
     res.status(200).json(product);
   } catch (err) {

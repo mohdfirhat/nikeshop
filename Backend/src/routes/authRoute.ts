@@ -14,13 +14,14 @@ authRoute.use(cookieParser());
 //Create - Register
 //Auth: Anyone
 authRoute.post("/register", async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { name, email, password } = req.body;
   //encrypt password by salting and hashing
   const saltRounds = Number(process.env.SALT_ROUND);
   try {
     bcrypt.hash(password, saltRounds).then(function (hash) {
       // Store hash in your password DB.
       const newUser: Promise<UserCreationAttributes> = User.create({
+        name,
         email,
         password: hash,
       });
@@ -37,20 +38,20 @@ authRoute.post("/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
     //TODO:test login
-    const user = await User.findOne({ where: { email } });
-    console.log(user);
+    const user = await User.findAll({ where: { email } });
+    console.log(`User: ${user}`);
     if (!user) {
-      throw Error("Wrong Email");
+      res.status(401).json("Email not found!");
     }
 
-    const match = await bcrypt.compare(password, user.password);
-    console.log(match);
+    const match = await bcrypt.compare(password, user[0].password);
+    console.log(`Password match: ${match}`);
     if (match) {
       //create jwt token
       const accessToken: string = jwt.sign(
         {
-          id: user.id,
-          isAdmin: user.isAdmin,
+          id: user[0].id,
+          isAdmin: user[0].isAdmin,
         },
         process.env.JWT_SEC!,
         { expiresIn: "3d" }
@@ -62,7 +63,7 @@ authRoute.post("/login", async (req: Request, res: Response) => {
       });
 
       //TODO:login route
-      res.status(201).send();
+      res.status(201).send(`Cookie set: Access token is ${accessToken}`);
     } else {
       res.status(401).json("Wrong Password!");
     }

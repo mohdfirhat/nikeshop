@@ -12,8 +12,12 @@ export const userRoute = express.Router();
 //Auth: Anyone
 userRoute.post("/", async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const newUser: UserAttributes = await User.create({ email, password });
+    const { email, name, password } = req.body;
+    const newUser: UserAttributes = await User.create({
+      email,
+      name,
+      password,
+    });
     res.status(201).json(newUser);
   } catch (err) {
     res.status(500).json(err);

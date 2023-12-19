@@ -14,6 +14,7 @@ import Order from "./Order";
 import { NonAttribute } from "sequelize";
 
 export type UserCreationAttributes = {
+  name: string;
   email: string;
   password: string;
 };
@@ -23,7 +24,7 @@ export type UserAttributes = UserCreationAttributes & {
   isAdmin: boolean;
   createdAt: Date;
   updatedAt: Date;
-  orders?: NonAttribute<Order[]>;
+  orders?: Order[];
 };
 
 @Table({
@@ -40,6 +41,9 @@ class User extends Model<UserAttributes, UserCreationAttributes> {
   @Unique
   @Column({ type: DataType.STRING })
   declare email: string;
+
+  @Column({ type: DataType.STRING })
+  declare name: string;
 
   @Column({ type: DataType.STRING })
   declare password: string;
@@ -62,10 +66,12 @@ export const bulkCreateUsers = () =>
   User.bulkCreate([
     {
       email: "hello@gmail.com",
+      name: "hello1",
       password: "world",
     },
     {
       email: "hello2@gmail.com",
+      name: "hello2",
       password: "world2",
     },
   ]);

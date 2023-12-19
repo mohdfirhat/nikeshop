@@ -11,13 +11,13 @@ export type ProductCartModel = ProductModel & {
 export type CartState = {
   products: ProductCartModel[];
   cartQuantity: number;
-  total: number;
+  totalCost: number;
 };
 
 const initialState: CartState = {
   products: [],
   cartQuantity: 0,
-  total: 0,
+  totalCost: 0,
 };
 type productCartActionModel = {
   payload: ProductCartModel;
@@ -38,11 +38,11 @@ const cartSlice = createSlice({
       );
       if (find >= 0) {
         state.products[find].quantity += action.payload.quantity;
-        state.total += action.payload.price * action.payload.quantity;
+        state.totalCost += action.payload.price * action.payload.quantity;
       } else {
         state.cartQuantity += 1;
         state.products.push(action.payload);
-        state.total += action.payload.price * action.payload.quantity;
+        state.totalCost += action.payload.price * action.payload.quantity;
       }
     },
     addCartQuantity: (state, action: productCartActionModel) => {
@@ -56,7 +56,7 @@ const cartSlice = createSlice({
       if (addIndex >= 0) {
         state.products[addIndex].quantity += 1;
       }
-      state.total += action.payload.price;
+      state.totalCost += action.payload.price;
     },
     reduceCartQuantity: (state, action: productCartActionModel) => {
       const reduceIndex = state.products.findIndex(
@@ -69,7 +69,7 @@ const cartSlice = createSlice({
       if (reduceIndex >= 0) {
         state.products[reduceIndex].quantity -= 1;
       }
-      state.total -= action.payload.price;
+      state.totalCost -= action.payload.price;
     },
     removeCartItem: (state, action: productCartActionModel) => {
       const deleteIndex = state.products.findIndex(
@@ -90,7 +90,7 @@ const cartSlice = createSlice({
         }
       }
       state.cartQuantity -= 1;
-      state.total -= action.payload.price * action.payload.quantity;
+      state.totalCost -= action.payload.price * action.payload.quantity;
     },
   },
   extraReducers: {},
