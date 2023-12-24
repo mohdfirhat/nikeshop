@@ -7,8 +7,10 @@ const baseURL =
 
 export const publicRequest = axios.create({
   baseURL,
+  withCredentials: true,
 });
 
 export const userRequest = axios.create({
   baseURL,
+  withCredentials: true,
 });

@@ -4,21 +4,22 @@ import OrderProduct, {
   OrderProductCreationAttributes,
 } from "../database/models/OrderProduct";
 import { ProductAttributes } from "../database/models/Product";
-import { verifyTokenAndAuthorization } from "./authRoute";
+import { verifyToken, verifyTokenAndAuthorization } from "./authRoute";
 
 export const orderRoute = express.Router();
 
+// TODO: Add back the verifyTokenAnd Authorization
 //TODO: Add validator for user input
 //TODO: Error-handling
 
 //CRUD: Create Read Update Delete
 //Create
 //Auth: User
-orderRoute.post("/", verifyTokenAndAuthorization, async (req, res) => {
+orderRoute.post("/", verifyToken, async (req, res) => {
+  const userId = req.user.id;
+  console.log(userId);
+  const { products, cartQuantity, totalCost } = req.body;
   try {
-    const userId = req.user.id;
-    const { products, cartQuantity, totalCost } = req.body;
-
     const newOrder: Order = await Order.create({
       userId,
       totalCost,

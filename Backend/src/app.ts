@@ -3,12 +3,13 @@ dotenv.config();
 import express, { Response } from "express";
 import cors from "cors";
 import morgan from "morgan";
-import helmet from "helmet";
 import { productRoute } from "./routes/productRoute";
 import { userRoute } from "./routes/userRoute";
 import { connection, createTable } from "./database/connection";
 import { orderRoute } from "./routes/orderRoute";
 import { authRoute } from "./routes/authRoute";
+import cookieParser from "cookie-parser";
+import helmet from "helmet";
 
 dotenv.config();
 
@@ -16,10 +17,16 @@ connection();
 createTable();
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: "http://localhost:5173",
+  })
+);
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(helmet());
+app.use(cookieParser());
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);

@@ -2,7 +2,6 @@ import express, { NextFunction, Request, Response } from "express";
 import User, { UserCreationAttributes } from "../database/models/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import cookieParser from "cookie-parser";
 
 export const authRoute = express.Router();
 
@@ -10,7 +9,7 @@ export const authRoute = express.Router();
 //TODO: Add validator for user input
 //TODO: Error-handling
 //CRUD: Create Read Update Delete
-authRoute.use(cookieParser());
+
 //Create - Register
 //Auth: Anyone
 authRoute.post("/register", async (req: Request, res: Response) => {
@@ -57,13 +56,17 @@ authRoute.post("/login", async (req: Request, res: Response) => {
         { expiresIn: "3d" }
       );
       //set jwt to access_token cookie
-      res.cookie("access_token", accessToken, {
+      res.cookie("accessToken", accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
       });
+      res.cookie("userId", user[0].id);
 
       //TODO:login route
-      res.status(201).send(`Cookie set: Access token is ${accessToken}`);
+      res.status(201).send({
+        message: `Cookie set: Access token is ${accessToken}`,
+        userId: `${user[0].id}`,
+      });
     } else {
       res.status(401).json("Wrong Password!");
     }
@@ -72,24 +75,30 @@ authRoute.post("/login", async (req: Request, res: Response) => {
   }
 });
 
+authRoute.get("/logout", (_req, res: Response) => {
+  res.clearCookie("accessToken");
+  res.clearCookie("userId");
+  res.status(200).send("Cookies deleted!");
+});
+
 export const verifyToken = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const access_token = req.cookies;
-  if (access_token) {
-    jwt.verify(
-      access_token,
-      process.env.JWT_SEC!,
-      (error: any, decode: any) => {
-        if (error) {
-          res.status(401).send(error);
-        }
-        req.user = decode;
-        next();
+  const accessToken = req.cookies.accessToken;
+  console.log(accessToken);
+  if (accessToken) {
+    jwt.verify(accessToken, process.env.JWT_SEC!, (error: any, decode: any) => {
+      if (error) {
+        res.status(401).send(error);
       }
-    );
+      req.user = decode;
+      console.log(decode);
+      next();
+    });
+  } else {
+    res.status(401).send("There is no cookies named accessToken.");
   }
 };
 
@@ -99,7 +108,8 @@ export const verifyTokenAndAuthorization = (
   next: NextFunction
 ) => {
   verifyToken(req, res, () => {
-    if (req.user?.id === req.params.id || req.user?.isAdmin) {
+    if (req.user?.id === req.cookies.userId || req.user?.isAdmin) {
+      console.log(req.user.id);
       next();
     } else {
       res.status(403).json("You are not the user or admin!");

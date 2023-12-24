@@ -9,8 +9,8 @@ const CartPage = () => {
 
   const handleClick = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+    const { products, cartQuantity, totalCost } = cart;
     try {
-      const { products, cartQuantity, totalCost } = cart;
       const res = await userRequest.post("/orders", {
         products,
         cartQuantity,
