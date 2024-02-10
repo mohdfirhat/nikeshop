@@ -38,6 +38,8 @@ The TailwindCSS cater for mobile users and added CSS properties for desktop view
 ## Axios(In progress)
 
 Axios is used to upload post and get data from Postgres Database.
+
+## Jest (Testing)
 Jest is used to test the custom function used in the apps.
 
 # Backend
@@ -48,7 +50,7 @@ Express.js backend framework is used for this project.
 
 ## PostGresSQL
 
-PostGresSQL is used together with Sequelize(ORM)to create and query the database. There is Many-to-Many relationship between Orders and product which can be seen at Backend/src/database/models. View the Entity Relationship Diagram(ERD) at /nike-ecommerse.png.
+PostGresSQL is used together with Sequelize(ORM)to create and query the database. There is Many-to-Many relationship between Orders and product which can be seen at Backend/src/database/models. **View the Entity Relationship Diagram(ERD) at /nike-ecommerse.png.**
 
 ## JsonWebToken(JWT) and httpOnly Cookies
 
