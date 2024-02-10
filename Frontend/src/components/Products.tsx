@@ -1,44 +1,37 @@
 import { useEffect, useState } from "react";
 import Product from "./Product";
-import axios from "axios";
-import { ProductModel } from "../model/model";
+import { ProductDescriptionModel } from "../model/model";
+import { publicRequest } from "../requestMethods";
 
 type Props = {
   category: string;
 };
 //TODO: Make sure process.env is working and remove hardcorded value
 const Products: React.FC<Props> = ({ category }) => {
-  const baseUrl = "http://localhost:3000/api";
+  // const baseUrl = "http://localhost:3000/api";
 
-  const [products, setProducts] = useState<ProductModel[]>([]);
+  const [products, setProducts] = useState<
+    ProductDescriptionModel[] | undefined
+  >(undefined);
 
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const res = await axios.get(
-          category
-            ? `${baseUrl}/products?category=${category}`
-            : `${baseUrl}/products`
+        const res = await publicRequest.get(
+          category ? `/products?category=${category}` : "/products"
         );
         console.log(res);
         setProducts(res.data);
-
-        console.log(products);
       } catch (err) {}
     };
     getProducts();
+    console.log(products);
   }, []);
-
-  const ProductData = products.filter((prod) =>
-    prod.categories.includes(category)
-  );
 
   return (
     <>
       <div className="sm:flex">
-        {ProductData.map((item) => (
-          <Product item={item} key={item.id} />
-        ))}
+        {products?.map((item) => <Product item={item} key={item.id} />)}
       </div>
     </>
   );

@@ -1,10 +1,10 @@
-import express from "express";
+import { ProductCartModel } from "./../../../Frontend/src/redux/cartSlice";
+import express, { NextFunction, Request, Response } from "express";
 import Order from "../database/models/Order";
-import OrderProduct, {
-  OrderProductCreationAttributes,
-} from "../database/models/OrderProduct";
-import { ProductAttributes } from "../database/models/Product";
-import { verifyToken, verifyTokenAndAuthorization } from "./authRoute";
+import OrderProduct from "../database/models/OrderProduct";
+import Product from "../database/models/Product";
+import { verifyTokenAndAuthorization } from "../middleware/verifyToken";
+import ProductDescription from "../database/models/ProductDescription";
 
 export const orderRoute = express.Router();
 
@@ -15,69 +15,85 @@ export const orderRoute = express.Router();
 //CRUD: Create Read Update Delete
 //Create
 //Auth: User
-orderRoute.post("/", verifyToken, async (req, res) => {
-  const userId = req.user.id;
-  console.log(userId);
-  const { products, cartQuantity, totalCost } = req.body;
-  try {
-    const newOrder: Order = await Order.create({
-      userId,
-      totalCost,
-      cartQuantity,
-    });
+orderRoute.post(
+  "/",
+  verifyTokenAndAuthorization,
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = Number(req.user.id);
+    console.log(userId);
+    const { products, cartQuantity, totalCost } = req.body;
+    try {
+      const newOrder: Order = await Order.create({
+        userId,
+        totalCost,
+        cartQuantity,
+      });
 
-    products.map(
-      (product: ProductAttributes & OrderProductCreationAttributes) => {
+      products.map((product: ProductCartModel) => {
         OrderProduct.create({
           orderId: newOrder.id,
-          productId: product.id,
-          size: product.size,
-          color: product.color,
+          productId: product.products[0].id,
           quantity: product.quantity,
         });
-      }
-    );
+      });
 
-    res.status(201).json(newOrder);
-  } catch (err) {
-    res.status(500).json(err);
+      res.status(201).json(newOrder);
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
 //Read
 //Auth: User
-orderRoute.get("/", verifyTokenAndAuthorization, async (req, res) => {
-  try {
-    const { userId } = req.body;
-    const orders: Order[] = await Order.findAll({ where: { userId } });
-    res.status(200).json(orders);
-  } catch (err) {
-    res.status(500).json(err);
+orderRoute.get(
+  "/",
+  verifyTokenAndAuthorization,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { userId } = req.cookies;
+      const orders: Order[] = await Order.findAll({
+        where: { userId },
+        include: [Product, ProductDescription],
+      });
+      res.status(200).json(orders);
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
-orderRoute.get("/:id", verifyTokenAndAuthorization, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const order: Order | null = await Order.findByPk(id);
-    res.status(200).json(order);
-  } catch (err) {
-    res.status(500).json(err);
+orderRoute.get(
+  "/:id",
+  verifyTokenAndAuthorization,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const order: Order | null = await Order.findByPk(id, {
+        include: [Product, ProductDescription],
+      });
+      res.status(200).json(order);
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 //Update
 //Auth: User
 //Dont allow update Order only delete and reorder products
 
 //Delete
 //Auth:User
-orderRoute.delete("/:id", verifyTokenAndAuthorization, async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { userId } = req.body;
-    const orders = await Order.destroy({ where: { id, userId } });
-    res.status(200).json(orders);
-  } catch (err) {
-    res.status(500).json(err);
+orderRoute.delete(
+  "/:id",
+  verifyTokenAndAuthorization,
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const orders = await Order.destroy({ where: { id } });
+      res.status(200).json(orders);
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);

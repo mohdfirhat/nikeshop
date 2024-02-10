@@ -5,16 +5,30 @@ export type categoryItemModel = {
   cat: string;
 };
 
-export type ProductModel = {
-  id: string;
+export type ProductDescriptionModel = {
+  id: number;
   name: string;
   shortDesc: string;
   description: string;
-  sizes: string[];
-  colors: string[];
   categories: string[];
   urls: string[];
   rating: number;
   price: number;
+};
+
+export type ProductModel = {
+  id: number;
+  productDescriptionId: number;
   stock: number;
+  size: string;
+  color: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ProductsWithDescriptionModel = ProductDescriptionModel & {
+  products: ProductModel[];
+};
+export type ProductWithDescriptionModel = ProductDescriptionModel & {
+  products: ProductModel;
 };

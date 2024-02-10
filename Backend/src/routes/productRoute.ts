@@ -1,7 +1,8 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import Product from "../database/models/Product";
-import { verifyTokenAndAdmin } from "./authRoute";
+import { verifyTokenAndAdmin } from "../middleware/verifyToken";
 import { Op } from "sequelize";
+import ProductDescription from "../database/models/ProductDescription";
 
 export const productRoute = express.Router();
 
@@ -14,100 +15,115 @@ export const productRoute = express.Router();
 productRoute.post(
   "/",
   verifyTokenAndAdmin,
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const {
         name,
         shortDesc,
         description,
-        sizes,
-        colors,
         categories,
         urls,
         rating,
         price,
         stock,
+        size,
+        color,
       } = req.body;
-      const product = {
+      const productDescription = {
         name,
         shortDesc,
         description,
-        sizes,
-        colors,
         categories,
         urls,
         rating,
         price,
-        stock,
       };
-      const newProduct = await Product.create(product);
+      const newProductDescription = await ProductDescription.create(
+        productDescription
+      );
+
+      const newProduct = await Product.create({
+        productDescriptionId: newProductDescription.id,
+        stock,
+        size,
+        color,
+      });
+
       res.status(201).json(newProduct);
     } catch (err) {
-      res.status(500).json(err);
+      next(err);
     }
   }
 );
 
 //Read: get 10 products at a time
 //Auth: Anyone
-productRoute.get("/", async (req: Request, res: Response) => {
-  try {
-    const { category } = req.params;
-    const { offset } = req.body;
-    const product = offset
-      ? await Product.findAll({
-          offset,
-          limit: 10,
-          where: { categories: { [Op.contains]: [category] } },
-        })
-      : await Product.findAll({ limit: 10 });
-    res.status(200).json(product);
-  } catch (err) {
-    res.status(500).json(err);
+productRoute.get(
+  "/",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { category } = req.params;
+      const { offset } = req.body;
+      const product = offset
+        ? await ProductDescription.findAll({
+            offset,
+            limit: 10,
+            where: { categories: { [Op.contains]: [category] } },
+          })
+        : await ProductDescription.findAll({
+            limit: 10,
+            where: { categories: { [Op.contains]: [category] } },
+          });
+      res.status(200).json(product);
+    } catch (err) {
+      next(err);
+    }
   }
-});
-productRoute.get("/:id", async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const product = await Product.findByPk(id);
-    res.status(200).json(product);
-  } catch (err) {
-    res.status(500).json(err);
+);
+
+productRoute.get(
+  "/:id",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const product = await ProductDescription.findOne({
+        include: Product,
+        where: { id },
+      });
+      res.status(200).json(product);
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
 //Update
 //Auth: Admin
 productRoute.put(
   "/:id",
   verifyTokenAndAdmin,
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
       const {
         name,
         shortDesc,
         description,
-        sizes,
-        colors,
         categories,
         urls,
         rating,
         price,
+        productDescriptionId,
         stock,
+        size,
+        color,
       } = req.body;
+
       await Product.update(
         {
-          name,
-          shortDesc,
-          description,
-          sizes,
-          colors,
-          categories,
-          urls,
-          rating,
-          price,
           stock,
+          size,
+          color,
         },
         {
           where: {
@@ -115,9 +131,25 @@ productRoute.put(
           },
         }
       );
+      await ProductDescription.update(
+        {
+          name,
+          shortDesc,
+          description,
+          categories,
+          urls,
+          rating,
+          price,
+        },
+        {
+          where: {
+            id: productDescriptionId,
+          },
+        }
+      );
       res.status(200).json("Product is updated.");
     } catch (err) {
-      res.status(500).json(err);
+      next(err);
     }
   }
 );
@@ -127,7 +159,7 @@ productRoute.put(
 productRoute.delete(
   "/:id",
   verifyTokenAndAdmin,
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
       const deletedProduct = await Product.destroy({
@@ -137,7 +169,7 @@ productRoute.delete(
       });
       res.status(200).json(deletedProduct);
     } catch (err) {
-      res.status(500).json(err);
+      next(err);
     }
   }
 );

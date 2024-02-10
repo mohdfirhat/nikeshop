@@ -11,40 +11,38 @@ describe("cart reducer", () => {
   const initialState: CartState = {
     products: [],
     cartQuantity: 0,
-    total: 0,
+    totalCost: 0,
   };
 
   //start state has product with id 1 with 3 quantity
   const startState: CartState = {
-    products: [
-      {
-        id: 1,
-        name: "Nike Dri-FIT Team (MLB Minnesota Twins)",
-        url: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/0116e668-a77e-402d-b89f-04647db0f0ad/dri-fit-team-minnesota-twins-mens-long-sleeve-t-shirt-6Wdjql.png",
-        shortDesc: "Men's Long-Sleeve T-Shirt",
-        price: 40,
-        cat: ["men", "t-shirt"],
-        sizes: ["S", "M", "L"],
-        colors: ["Dark Blue"],
-        color: "Dark Blue",
-        size: "S",
-        quantity: 3,
-      },
-    ],
-    cartQuantity: 1,
-    total: 120,
+    products: [],
+    cartQuantity: 0,
+    totalCost: 0,
   };
+
   const cartItem: ProductCartModel = {
     id: 1,
     name: "Nike Dri-FIT Team (MLB Minnesota Twins)",
-    url: "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/0116e668-a77e-402d-b89f-04647db0f0ad/dri-fit-team-minnesota-twins-mens-long-sleeve-t-shirt-6Wdjql.png",
     shortDesc: "Men's Long-Sleeve T-Shirt",
+    description: "description1",
+    categories: ["men", "t-shirt"],
+    urls: [
+      "https://static.nike.com/a/images/t_PDP_1280_v1/f_auto,q_auto:eco/0116e668-a77e-402d-b89f-04647db0f0ad/dri-fit-team-minnesota-twins-mens-long-sleeve-t-shirt-6Wdjql.png",
+    ],
+    rating: 3.5,
     price: 40,
-    cat: ["men", "t-shirt"],
-    sizes: ["S", "M", "L"],
-    colors: ["Dark Blue"],
-    color: "Dark Blue",
-    size: "S",
+    products: [
+      {
+        id: 5,
+        productDescriptionId: 1,
+        stock: 20,
+        size: "M",
+        color: "Dark Blue",
+        createdAt: "2024-01-16T02:44:06.715Z",
+        updatedAt: "2024-01-16T02:44:06.715Z",
+      },
+    ],
     quantity: 3,
   };
 

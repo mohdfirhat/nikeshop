@@ -15,7 +15,7 @@ type Props = {
 
 const CartCard = ({ item }: Props) => {
   const dispatch = useAppDispatch();
-
+  console.log(item);
   return (
     <div className="card card-side bg-base-100 shadow-xl my-3">
       <figure className="w-[30%]">
@@ -25,8 +25,8 @@ const CartCard = ({ item }: Props) => {
         <h2 className="card-title">{item.name}</h2>
         <p>{item.shortDesc}</p>
         <p>{`$${item.price * item.quantity}`}</p>
-        <p>Size: {item.size}</p>
-        <p>Color: {item.color}</p>
+        <p>Size: {item.products[0].size}</p>
+        <p>Color: {item.products[0].color}</p>
         <div className="card-actions justify-around items-center">
           <button
             className="btn"

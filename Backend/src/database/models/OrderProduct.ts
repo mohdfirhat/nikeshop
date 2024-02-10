@@ -4,15 +4,15 @@ import {
   Model,
   DataType,
   ForeignKey,
+  PrimaryKey,
+  AutoIncrement,
 } from "sequelize-typescript";
-import Product from "./Product";
 import Order from "./Order";
+import Product from "./Product";
 
 export type OrderProductCreationAttributes = {
-  orderId: string;
-  productId: string;
-  size: string;
-  color: string;
+  orderId: number;
+  productId: number;
   quantity: number;
 };
 
@@ -24,20 +24,19 @@ export type OrderProductAttributes = OrderProductCreationAttributes;
   tableName: "order_product",
   modelName: "OrderProduct",
 })
-class OrderProduct extends Model<OrderProductCreationAttributes> {
+export class OrderProduct extends Model<OrderProductCreationAttributes> {
+  @PrimaryKey
+  @AutoIncrement
+  @Column({ type: DataType.INTEGER })
+  declare id: number;
+
   @ForeignKey(() => Order)
-  @Column({ type: DataType.UUID })
-  declare orderId: string;
+  @Column({ type: DataType.INTEGER })
+  declare orderId: number;
 
   @ForeignKey(() => Product)
-  @Column({ type: DataType.UUID })
-  declare productId: string;
-
-  @Column({ type: DataType.STRING })
-  declare size: string;
-
-  @Column({ type: DataType.STRING })
-  declare color: string;
+  @Column({ type: DataType.INTEGER })
+  declare productId: number;
 
   @Column({ type: DataType.INTEGER })
   declare quantity: number;

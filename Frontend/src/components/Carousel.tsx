@@ -1,30 +1,3 @@
-type carouselItem = {
-  id: number;
-  promoName: string;
-  promoDesc: string;
-  url: string;
-};
-const carouselData: carouselItem[] = [
-  {
-    id: 1,
-    promoName: "Spring Sale",
-    promoDesc: "Suit up for Spring with up to 30% discount",
-    url: "https://static.nike.com/a/images/t_prod/w_1536,c_limit/3de1aac6-ff9b-40df-aca0-407857781bb8/pdp.jpg",
-  },
-  {
-    id: 2,
-    promoName: "Black Friday Sale",
-    promoDesc: "Suit up for Black Friday with up to 20% discount",
-    url: "https://img.buzzfeed.com/buzzfeed-static/static/2020-05/15/13/asset/5ddd925391f1/sub-buzz-872-1589548499-9.jpg?downsize=700%3A%2A&output-quality=auto&output-format=auto",
-  },
-  {
-    id: 3,
-    promoName: "Chrismas Sale",
-    promoDesc: "Suit up for Chrismas with up to 30% discount",
-    url: "https://thumbs.dreamstime.com/b/model-walks-runway-nike-levi-s-kids-fashion-show-mercedes-benz-fashion-week-fall-new-york-ny-february-51215011.jpg",
-  },
-];
-
 const Carousel = () => {
   return (
     <div className="carousel w-full">

@@ -3,11 +3,11 @@ import {
   Column,
   Model,
   DataType,
-  Default,
   PrimaryKey,
   BelongsToMany,
   ForeignKey,
   BelongsTo,
+  AutoIncrement,
 } from "sequelize-typescript";
 import User from "./User";
 import Product from "./Product";
@@ -15,13 +15,13 @@ import OrderProduct from "./OrderProduct";
 import { NonAttribute } from "sequelize";
 
 export type OrderCreationAttributes = {
-  userId: string;
+  userId: number;
   totalCost: number;
   cartQuantity: number;
 };
 
 export type OrderAttributes = OrderCreationAttributes & {
-  id: string;
+  id: number;
   user?: User;
   products?: Product[];
 };
@@ -33,13 +33,13 @@ export type OrderAttributes = OrderCreationAttributes & {
 })
 class Order extends Model<OrderAttributes, OrderCreationAttributes> {
   @PrimaryKey
-  @Default(DataType.UUIDV4)
-  @Column({ type: DataType.UUID })
-  declare id: string;
+  @AutoIncrement
+  @Column({ type: DataType.INTEGER })
+  declare id: number;
 
   @ForeignKey(() => User)
-  @Column({ type: DataType.UUID })
-  declare userId: string;
+  @Column({ type: DataType.INTEGER })
+  declare userId: number;
 
   @Column({ type: DataType.DECIMAL })
   declare totalCost: number;
@@ -50,7 +50,9 @@ class Order extends Model<OrderAttributes, OrderCreationAttributes> {
   //Many-to-One Relationship - user
   @BelongsTo(() => User) user?: NonAttribute<User>;
   //Many-to-Many Relationship - product
-  @BelongsToMany(() => Product, { through: () => OrderProduct })
+  @BelongsToMany(() => Product, {
+    through: { model: () => OrderProduct, unique: false },
+  })
   products?: NonAttribute<Product[]>;
 }
 export default Order;

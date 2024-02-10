@@ -9,6 +9,7 @@ import {
   PrimaryKey,
   HasMany,
   Unique,
+  AutoIncrement,
 } from "sequelize-typescript";
 import Order from "./Order";
 import { NonAttribute } from "sequelize";
@@ -20,7 +21,7 @@ export type UserCreationAttributes = {
 };
 
 export type UserAttributes = UserCreationAttributes & {
-  id: string;
+  id: number;
   isAdmin: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -34,9 +35,9 @@ export type UserAttributes = UserCreationAttributes & {
 })
 class User extends Model<UserAttributes, UserCreationAttributes> {
   @PrimaryKey
-  @Default(DataType.UUIDV4)
-  @Column({ type: DataType.UUID })
-  declare id: string;
+  @AutoIncrement
+  @Column({ type: DataType.INTEGER })
+  declare id: number;
 
   @Unique
   @Column({ type: DataType.STRING })

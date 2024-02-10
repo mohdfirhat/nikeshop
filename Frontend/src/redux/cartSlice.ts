@@ -1,10 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ProductModel } from "../model/model";
+import { ProductsWithDescriptionModel } from "../model/model";
 import { RootState } from "../app/store";
 
-export type ProductCartModel = ProductModel & {
-  color: string;
-  size: string;
+export type ProductCartModel = ProductsWithDescriptionModel & {
   quantity: number;
 };
 
@@ -32,9 +30,9 @@ const cartSlice = createSlice({
       let find = state.products.findIndex(
         (item) =>
           //combine if same id,size,color else create new cart product
-          item.id === action.payload.id &&
-          item.size === action.payload.size &&
-          item.color === action.payload.color
+          item.products[0].id === action.payload.products[0].id &&
+          item.products[0].size === action.payload.products[0].size &&
+          item.products[0].color === action.payload.products[0].color
       );
       if (find >= 0) {
         state.products[find].quantity += action.payload.quantity;
@@ -49,9 +47,9 @@ const cartSlice = createSlice({
       const addIndex = state.products.findIndex(
         (item) =>
           //find product to delete
-          item.id === action.payload.id &&
-          item.size === action.payload.size &&
-          item.color === action.payload.color
+          item.products[0].id === action.payload.products[0].id &&
+          item.products[0].size === action.payload.products[0].size &&
+          item.products[0].color === action.payload.products[0].color
       );
       if (addIndex >= 0) {
         state.products[addIndex].quantity += 1;
@@ -62,9 +60,9 @@ const cartSlice = createSlice({
       const reduceIndex = state.products.findIndex(
         (item) =>
           //find product to delete
-          item.id === action.payload.id &&
-          item.size === action.payload.size &&
-          item.color === action.payload.color
+          item.products[0].id === action.payload.products[0].id &&
+          item.products[0].size === action.payload.products[0].size &&
+          item.products[0].color === action.payload.products[0].color
       );
       if (reduceIndex >= 0) {
         state.products[reduceIndex].quantity -= 1;
@@ -75,9 +73,9 @@ const cartSlice = createSlice({
       const deleteIndex = state.products.findIndex(
         (item) =>
           //find product to delete
-          item.id === action.payload.id &&
-          item.size === action.payload.size &&
-          item.color === action.payload.color
+          item.products[0].id === action.payload.products[0].id &&
+          item.products[0].size === action.payload.products[0].size &&
+          item.products[0].color === action.payload.products[0].color
       );
       console.log(deleteIndex);
       if (deleteIndex >= 0) {

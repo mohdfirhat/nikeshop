@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { ProductModel } from "../model/model";
+import { ProductDescriptionModel } from "../model/model";
 
-type Props = { item: ProductModel };
+type Props = { item: ProductDescriptionModel };
 
 const Product: React.FC<Props> = ({ item }) => {
   console.log(item);
