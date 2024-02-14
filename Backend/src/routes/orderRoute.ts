@@ -1,4 +1,3 @@
-import { ProductCartModel } from "./../../../Frontend/src/redux/cartSlice";
 import express, { NextFunction, Request, Response } from "express";
 import Order from "../database/models/Order";
 import OrderProduct from "../database/models/OrderProduct";
@@ -8,9 +7,33 @@ import ProductDescription from "../database/models/ProductDescription";
 
 export const orderRoute = express.Router();
 
-// TODO: Add back the verifyTokenAnd Authorization
-//TODO: Add validator for user input
-//TODO: Error-handling
+export type ProductDescriptionModel = {
+  id: number;
+  name: string;
+  shortDesc: string;
+  description: string;
+  categories: string[];
+  urls: string[];
+  rating: number;
+  price: number;
+};
+
+export type ProductModel = {
+  id: number;
+  productDescriptionId: number;
+  stock: number;
+  size: string;
+  color: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ProductsWithDescriptionModel = ProductDescriptionModel & {
+  products: ProductModel[];
+};
+export type ProductCartModel = ProductsWithDescriptionModel & {
+  quantity: number;
+};
 
 //CRUD: Create Read Update Delete
 //Create
