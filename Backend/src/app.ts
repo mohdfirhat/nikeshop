@@ -43,8 +43,8 @@ app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
 app.use("/api/orders", orderRoute);
 
-app.get("/api", (_req: Request, res: Response) => {
-  res.send("Hello World!");
+app.get("*", (_req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // app.use(invalidPathHandler);
