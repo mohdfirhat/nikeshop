@@ -5,7 +5,7 @@ import cors from "cors";
 import morgan from "morgan";
 import { productRoute } from "./routes/productRoute";
 import { userRoute } from "./routes/userRoute";
-import { connection } from "./database/connection";
+import { connection, createTable } from "./database/connection";
 import { orderRoute } from "./routes/orderRoute";
 import { authRoute } from "./routes/authRoute";
 import cookieParser from "cookie-parser";
@@ -17,7 +17,7 @@ import path from "path";
 dotenv.config();
 
 connection();
-//createTable();
+createTable();
 
 const app = express();
 app.use(
