@@ -11,7 +11,6 @@ import { authRoute } from "./routes/authRoute";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import { errorLogger, errorResponder } from "./middleware/errorHandling";
-import { invalidPathHandler } from "./middleware/invalidPath";
 import path from "path";
 
 dotenv.config();
@@ -48,7 +47,7 @@ app.get("/api", (_req: Request, res: Response) => {
   res.send("Hello World!");
 });
 
-app.use(invalidPathHandler);
+// app.use(invalidPathHandler);
 app.use(errorLogger);
 app.use(errorResponder);
 

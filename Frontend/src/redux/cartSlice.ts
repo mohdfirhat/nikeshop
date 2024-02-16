@@ -91,7 +91,6 @@ const cartSlice = createSlice({
       state.totalCost -= action.payload.price * action.payload.quantity;
     },
   },
-  extraReducers: {},
 });
 
 export const {
