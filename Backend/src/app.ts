@@ -31,7 +31,11 @@ app.use(
 );
 app.use(morgan("dev"));
 app.use(express.json());
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname + "/public")));
 
