@@ -4,10 +4,14 @@ import { titleCase } from "../util/titleCase";
 
 const ProductListPage: React.FC = () => {
   const location = useLocation();
-  const category = location.pathname.split("/")[2];
+  console.log(location);
+  const category = location.search.split("=")[1];
+  console.log(category);
   return (
     <>
-      <h2 className=" text-4xl font-bold pt-8 pl-8">{titleCase(category)}</h2>
+      <h2 className=" text-4xl font-bold pt-8 pl-8">
+        {category ? titleCase(category) : "Products"}
+      </h2>
       <Products category={category} />
     </>
   );

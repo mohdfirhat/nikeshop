@@ -8,7 +8,7 @@ type Props = {
 const CategoryItem = ({ item }: Props) => {
   return (
     <div className="relative  h-[80vh] my-4 mx-auto md:min-w-[30%] p-1">
-      <Link to={`/products/${item.cat}`}>
+      <Link to={`/products?categories=${item.cat}`}>
         <img
           className="w-full h-full object-cover object-top rounded-lg"
           src={item.url}

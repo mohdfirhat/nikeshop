@@ -1,8 +1,8 @@
 import express, { NextFunction, Request, Response } from "express";
 import Product from "../database/models/Product";
 import { verifyTokenAndAdmin } from "../middleware/verifyToken";
-import { Op } from "sequelize";
 import ProductDescription from "../database/models/ProductDescription";
+import { Op } from "sequelize";
 
 export const productRoute = express.Router();
 
@@ -62,19 +62,22 @@ productRoute.get(
   "/",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { category } = req.params;
+      const { categories } = req.query;
+      console.log(req);
       const { offset } = req.body;
-      const product = offset
-        ? await ProductDescription.findAll({
-            offset,
-            limit: 10,
-            where: { categories: { [Op.contains]: [category] } },
-          })
-        : await ProductDescription.findAll({
-            limit: 10,
-            where: { categories: { [Op.contains]: [category] } },
-          });
-      res.status(200).json(product);
+      if (typeof categories === "string") {
+        const product = categories
+          ? await ProductDescription.findAll({
+              offset,
+              limit: 10,
+              where: { categories: { [Op.contains]: [categories] } },
+            })
+          : await ProductDescription.findAll({
+              limit: 10,
+              where: { categories: { [Op.contains]: [categories] } },
+            });
+        res.status(200).json(product);
+      }
     } catch (err) {
       next(err);
     }

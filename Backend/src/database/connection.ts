@@ -37,7 +37,8 @@ export const createTable = async () => {
       Product,
       ProductDescription,
     ]);
-    await sequelize.sync({ force: true });
+    await sequelize.sync();
+    // use this to recreate table for dev await sequelize.sync({ force: true });
     bulkCreateProductDescriptions();
     bulkCreateProducts();
     bulkCreateUsers();

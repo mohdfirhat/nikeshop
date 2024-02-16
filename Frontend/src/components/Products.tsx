@@ -18,7 +18,7 @@ const Products: React.FC<Props> = ({ category }) => {
     const getProducts = async () => {
       try {
         const res = await publicRequest.get(
-          category ? `/products?category=${category}` : "/products"
+          category ? `/products?categories=${category}` : "/products"
         );
         console.log(res);
         setProducts(res.data);

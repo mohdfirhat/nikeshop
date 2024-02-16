@@ -7,7 +7,7 @@ const Product: React.FC<Props> = ({ item }) => {
   console.log(item);
   return (
     <div className="card min-w-[300px] bg-base-100 shadow-xl m-2">
-      <Link to={`/product/${item.id}`}>
+      <Link to={`/products/${item.id}`}>
         <figure>
           <img src={item.urls[0]} />
         </figure>
