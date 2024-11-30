@@ -56,7 +56,7 @@ PostGresSQL is used together with Sequelize(ORM)to create and query the database
 
 ## JsonWebToken(JWT) and httpOnly Cookies
 
-JsonWebToken(JWT) is used to authenticate the user which is passed from the cookies["access_token"](httpOnly and secure) .and using the verifyToken middleware.
+JsonWebToken(JWT) is used to authenticate the user which is passed from the cookies["access_token"](httpOnly and secure) and using the verifyToken middleware.
 
 ## Security(In progress)
 
