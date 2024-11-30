@@ -4,13 +4,13 @@
 
 ## Frontend Installation
 
-npm install
-npm run dev
+`npm install`
+`npm run dev`
 
 ## Backend Installation
 
-npm install
-npm start
+`npm install`
+`npm start`
 
 # Project Description
 
