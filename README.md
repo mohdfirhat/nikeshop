@@ -5,11 +5,13 @@
 ## Frontend Installation
 
 `npm install`
+
 `npm run dev`
 
 ## Backend Installation
 
 `npm install`
+
 `npm start`
 
 # Project Description
@@ -35,7 +37,7 @@ Redux toolkit is used to mainly to used for the following:
 Responsive Mobile CSS
 The TailwindCSS cater for mobile users and added CSS properties for desktop view.
 
-## Axios(In progress)
+## Axios
 
 Axios is used to upload post and get data from Postgres Database.
 
